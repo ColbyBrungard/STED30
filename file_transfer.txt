@@ -1,0 +1,18 @@
+Through Suzann, I was given access to a google cloud storage bucket. 
+
+Nick vonWolf (NMSU HPC sys admin) installed google-cloud-sdk on discovery and gave me access to discovery-files.nmsu.edu, he also upped the number of processes allowed from 50 to 4096 which fixed the errors I was getting. 
+
+Here is the process + code that I used to transfer files to the google cloud storage bucket.
+
+From my computer, opened powershell:
+powershell$ ssh cbrung@discovery-files.nmsu.edu
+ (this logged me into the file transfer node)
+
+Once logged into the file transfer node I then did the following commands to transfer the files:
+ 
+$ module load google-cloud-sdk
+$ tmux (this opened a persistent terminal so the files would transfer even if I detached). 
+
+$ gcloud auth login colby.brungard@gmail.com (I used my personal email since this is what account had permission to the storage bucket)
+
+$ gsutil -m rsync CONUS gs://30m-terrain-variables (this transferred the files which took about 14 hours)
