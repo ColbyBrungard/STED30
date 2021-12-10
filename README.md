@@ -7,10 +7,6 @@ geos/3.8.1
 gdal/3.2.0
 saga-gis/7.9.0
 
-Question: where is the buffering and trimming done? 
-clipping was done so that only 10 cells remained
-
-
 Preprocessing: 
 A large-scale DEM in geotif format should be tiled. Tiling should performed using a buffered area to avoid edge contamination during variable calculation. We chose to buffer each tile by 4 km. Each DEM tile processed with the TauDEM pit remove tool to fill sinks. We also chose to smooth the DEM during preprocessing. The filled and smoothed DEM tiles should be in .tif format and named as tilefelsm.tif where tile is the tile name and felsm is added during the filling and smoothing (e.g., 010100felsm.tif). 
 
