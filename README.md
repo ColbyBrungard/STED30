@@ -57,3 +57,27 @@ tdl8r (for 10m variables);
 2. make mosaics in COG format. 
 3. Prarie potholes, karst, and other real depressions. - If I can get a raster of these then I could use it to not fill these real sinks during DEM pit remove 
 4. A more efficient way to do this computation would be to find a computer with more nodes and submit each watershed as an indivudal job (could probaby be done with SLURM job arrays). 
+
+Base DEM aquisition and preparation: 
+
+Downloaded 1 arc sec (approx. 30m) DEM tiles from National Elevation Dataset.  
+
+Included parts of Canada and Mexico to avoid edge artifacts 
+
+ Downloaded 1 arc sec (approx 30m) DEMs from National Elevation Dataset on 2/25/2021. All data is current as of this date (the NED refreshes frequently). all tiled DEMs come as: EPSG 4269 - NAD 83 Geographic coordinates 
+
+  1a. DEMs were downloaded from the national map2 (https://apps.nationalmap.gov/downloader/#/) by dragging an extent box around CONUS. I included large parts of Canada and Mexico to avoid any edge effects 
+
+  1b. This resulted in the selection of 3370  DEM tiles. I exported the search results as a .csv file (please note that the .csv format is required. You must open this, copy the right column and paste into uGet from clipboard). If you select the .txt option it does not seem to get all of the files) 
+
+  1c. I used the uGet program to download all the tiles: https://ugetdm.com/downloads/; https://apps.nationalmap.gov/uget-instructions/# (download speeds up dramatically if you use 16 connections).  
+
+  1d. DEM tiles come as both .tif and .zip files. It would be delightful if all tiles were one format, but they are not (I think because the USGS is in the process of converted to cloud optimized geotifs). However; not all tiles are yet available as .tif necessitating the need to download both .tif and .zip files.  
+
+  1e. All zipped tiles unpack to .img format and some are duplicates of what the USGS provides as .tif files (talk about a data management mess!). To over come this I:  
+
+Unzipped all .zip files to different folder, selected only the .img files 
+
+Used the following to convert .img files to .tif in osgeo4w 
+
+This resulted in filenames that had a 'img' prefix and a _1 suffix (before the file extension). I used ReNamer (https://www.den4b.com/products/renamer) to batch rename these to match what the USGS provides as .tif files. I then copied all of these .tif files to the folder where all the .tif files that I directly downloaded were stored. If the files had the same name I did not copy these. 
