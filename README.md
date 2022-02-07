@@ -81,3 +81,25 @@ Unzipped all .zip files to different folder, selected only the .img files
 Used the following to convert .img files to .tif in osgeo4w 
 
 This resulted in filenames that had a 'img' prefix and a _1 suffix (before the file extension). I used ReNamer (https://www.den4b.com/products/renamer) to batch rename these to match what the USGS provides as .tif files. I then copied all of these .tif files to the folder where all the .tif files that I directly downloaded were stored. If the files had the same name I did not copy these. 
+
+
+HUC 6 Documentations
+ater Boundary Dataset (https://nhd.usgs.gov/wbd.html) HUC's obtained from: 
+https://nrcs.app.box.com/v/huc
+
+I found this link by: 
+GeospatialDataGateway -> Select by State -> New Mexico -> Hydrologic Units -> click the blue 'i' (information circle). This brings up data descriptor that gives the above link. 
+The benefit of using the above link is that it allows me to download HUC boundaries for the entire country and not just 1 state. 
+
+I then subset the watersheds for CONUS (excluding HI and AK), fixed geometry (QGIS 3.x fix geometry tool) to remove a few errors, and projected to Albers Equal Area: "+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"
+
+reprojection done using the following code:
+	library(rgdal)
+	area <- readOGR(dsn="D:/DATA/HUC data", layer="wbdhu8_a_us_september2017_CONUS_4269_validGeom")
+	area2 <- spTransform(area, CRS("+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 +y_0=0 +datum=NAD83 +units=m +no_defs +ellps=GRS80 +towgs84=0,0,0"))
+	writeOGR(area2, dsn = "D:/DATA/HUC data", layer = "wbdhu8_a_us_september2017_CONUS_Albers_validGeom", driver = 'ESRI Shapefile')
+
+
+
+
+
