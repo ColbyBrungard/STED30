@@ -10,7 +10,8 @@ source ./common.sh
 wsgrd="$1" # Watershed sgrd file path
 wclip="$2" # Watershed clip file path
 wout="$3" # Watershed output directory path
-LUT="$4" # lookup table
+LUT="$4" # lookup table 1 for reclassification
+LUT2="$5" # lookup table 2 for reclassification
 
 # Output Directories
 tdir="$wout/saga2_temp" # temp directory
@@ -57,11 +58,25 @@ for order in ${orders[@]}; do
 	fi
 done
 
+
+echo "$(date +%F\ %H:%M:%S): starting relative landscape position" 
+# Relative Landscape Position
+for order in ${orders[@]}; do
+    tfile="$wout/rlp_$order.tif"
+    if ! validate_gdal_files "$tfile"; then
+		saga_cmd grid_calculus 1 -GRIDS="$tdir/vdcn_$order.sgrd;$tdir/vd_$order.sgrd" -RESULT="$tdir/rlp_$order.sgrd" -FORMULA="g1 / (g1 + g2)" -NAME=Calculation -FNAME=0 -USE_NODATA=0 -TYPE=7 
+		saga_cmd grid_tools 12 -INPUT="$tdir/rlp_$order.sgrd" -OUTPUT="$tdir/rlp_$order.sgrd" -METHOD=1 -RANGE="$LUT2"
+		Trim_gdalwarp "$wclip" "$bufferB" "$tdir/rlp_$order.sdat" "$tfile"
+	fi
+
+done
+
+
 echo "$(date +%F\ %H:%M:%S): starting potential solar radiation" 
 # Potential Incoming Solar Radiation. It would be nice to checkpoint both diffuse and direct, but it takes so very long. 
 declare -a days=("2021-01-22" "2021-02-22" "2021-03-22" "2021-04-22" "2021-05-22" "2021-06-22" "2021-07-22" "2021-08-22" "2021-09-22" "2021-10-22" "2021-11-22" "2021-12-22")
 for day in ${days[@]}; do
-	tfile="$wout/pisrdif_$day.tif"
+	tfile="$wout/pisrdir_$day.tif"
 	if ! validate_gdal_files "$tfile"; then
 		saga_cmd ta_lighting 2 -GRD_DEM="$wsgrd" -GRD_DIRECT="$tdir/pisrdir_$day.sdat" -GRD_DIFFUS="$tdir/pisrdif_$day.sdat" -SOLARCONST=1367.000000 -LOCALSVF=1 -UNITS=0 -SHADOW=1 -LOCATION=1 -PERIOD=1 -HOUR_RANGE_MIN=0.000000 -HOUR_RANGE_MAX=24.000000 -HOUR_STEP=4.000000 -METHOD=2 -LUMPED=70.000000 -DAY="$day" 
 	
@@ -108,7 +123,7 @@ for nbr in ${neighbors[@]}; do
 done
 
 # Cleanup Temp Files
-rm -rf "$tdir"
+#rm -rf "$tdir"
 
 #Print elapsed time
 duration=$SECONDS
