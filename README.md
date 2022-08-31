@@ -15,19 +15,13 @@ Each filled and smoothed tile should be placed in it's own directory. Each direc
 
 Elevation Derivative Calculation: 
  - submit.sh - this submits a SLURM job and calls other .sh files to do the acutal calculations
-
   - convert.sh - called by submit.sh, this converts the DEM tif file to the format requried by SAGA, then 
- 
   - common.sh  - called by submit.sh, a series of functions for trimming edges from and compressing derivatives, and for error checking. 
- 
   - saga1.sh   - called by submit.sh, this file does the actual calculations*; focalStats, releative elevation, TPI
- 
   - saga2.sh   - called by submit.sh, this file does the actual calculations*; vdcn, vd, PISR, mbi, ci, vrm
- 
   - saga3.sh   - called by submit.sh, this file does the actual calculations*; swi, twi, spi, openness, dif openness, hillshade, dah, geomorphons
-
  - saga4.sh   - called by submit.sh, this file does the actual calculations*, morphometric features, tri, tsc
-  * The calculations in these files were balanced to that each call took about the same time. This maximized computational efficienecy. 
+  \*\ The calculations in these files were balanced to that each call took about the same time. This maximized computational efficienecy. 
  
   - lut_reclass.txt - called by saga 2 to convert negative values of vdcn or vd to zero. This is just some error correcting. 
 
